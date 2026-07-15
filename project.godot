@@ -11,13 +11,28 @@ config_version=5
 [application]
 
 config/name="tower"
+run/main_scene="res://scenes/app/app.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+App="*res://autoload/app.gd"
+ConfigManager="*res://autoload/config_manager.gd"
+DialogueManager="*uid://c3rodes2l3gxb"
+PhantomCameraManager="*uid://duq6jhf6unyis"
+SaveManager="*res://autoload/save_manager.gd"
+SceneManager="*uid://j20v4cg7v8m1"
+SceneFlow="*res://autoload/scene_flow.gd"
 
 [display]
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/GDExcelExporter/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/scene_manager/plugin.cfg")
 
 [physics]
 
