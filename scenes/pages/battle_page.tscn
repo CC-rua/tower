@@ -7,6 +7,7 @@
 [ext_resource type="TileSet" uid="uid://ci76x3vmv81x8" path="res://resource/tilemap/decoration_128.tres" id="4_psyvj"]
 [ext_resource type="Script" uid="uid://dmsd7fr2odkk0" path="res://systems/battle/battle_map_controller.gd" id="5_06183"]
 [ext_resource type="Script" uid="uid://cv0alkgy125td" path="res://systems/battle/map_objects_controller.gd" id="6_1x2d6"]
+[ext_resource type="Script" uid="uid://bbclqhkx3i667" path="res://systems/battle/gem_inventory_panel.gd" id="7_u6q7p"]
 
 [node name="BattlePage" type="Control" unique_id=1350352959]
 layout_mode = 3
@@ -45,6 +46,10 @@ script = ExtResource("6_1x2d6")
 position = Vector2(480, 224)
 origin_cell = Vector2i(7, 3)
 
+[node name="MapTower2" parent="MapObjects/Towers" unique_id=568096841 instance=ExtResource("2_mw2g7")]
+position = Vector2(672, 224)
+origin_cell = Vector2i(10, 3)
+
 [node name="TileMap" type="Node" parent="." unique_id=1062314583]
 
 [node name="Ground" type="TileMapLayer" parent="TileMap" unique_id=2075997659]
@@ -68,3 +73,42 @@ tile_set = ExtResource("4_psyvj")
 
 [node name="BattleMapController" type="Node" parent="." unique_id=537986881]
 script = ExtResource("5_06183")
+
+[node name="HudLayer" type="CanvasLayer" parent="." unique_id=623277010]
+layer = 20
+
+[node name="GemInventoryPanel" type="PanelContainer" parent="HudLayer" unique_id=1482782345]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -236.0
+offset_top = -228.0
+offset_right = -24.0
+offset_bottom = 228.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("7_u6q7p")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/GemInventoryPanel" unique_id=1191061827]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/GemInventoryPanel/MarginContainer" unique_id=1959755850]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="HudLayer/GemInventoryPanel/MarginContainer/VBoxContainer" unique_id=1505237062]
+layout_mode = 2
+text = "宝石背包"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="HudLayer/GemInventoryPanel/MarginContainer/VBoxContainer" unique_id=1347560938]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3

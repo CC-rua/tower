@@ -103,7 +103,7 @@ func place_tower(_cell: Vector2i) -> MapTower:
 
 
 # 本类方法：给指定格子的塔位安装宝石，使其成为防御塔。
-func attach_gem(_cell: Vector2i, _gem_data: Variant) -> bool:
+func attach_gem(_cell: Vector2i, _gem_data: MapGem) -> bool:
 	if map_model == null:
 		return false
 	return map_model.attach_gem(_cell, _gem_data)

@@ -140,9 +140,11 @@ func unregister_tower(_tower: MapTower) -> void:
 
 
 # 本类方法：给指定格子的塔位安装宝石。
-func attach_gem(_cell: Vector2i, _gem_data: Variant) -> bool:
+func attach_gem(_cell: Vector2i, _gem_data: MapGem) -> bool:
 	var _data := get_cell(_cell)
 	if _data == null or not _data.can_attach_gem():
+		return false
+	if _gem_data == null:
 		return false
 
 	var _tower := _data.tower_node as MapTower
@@ -151,12 +153,11 @@ func attach_gem(_cell: Vector2i, _gem_data: Variant) -> bool:
 	if _tower.has_gem():
 		return false
 
-	_tower.attach_gem(_gem_data)
-	return true
+	return _tower.attach_gem(_gem_data)
 
 
 # 本类方法：移除指定格子塔位上的宝石。
-func detach_gem(_cell: Vector2i) -> Variant:
+func detach_gem(_cell: Vector2i) -> MapGem:
 	var _data := get_cell(_cell)
 	if _data == null:
 		return null
