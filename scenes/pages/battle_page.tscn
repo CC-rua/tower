@@ -8,6 +8,14 @@
 [ext_resource type="Script" uid="uid://dmsd7fr2odkk0" path="res://systems/battle/battle_map_controller.gd" id="5_06183"]
 [ext_resource type="Script" uid="uid://cv0alkgy125td" path="res://systems/battle/map_objects_controller.gd" id="6_1x2d6"]
 [ext_resource type="Script" uid="uid://bbclqhkx3i667" path="res://systems/battle/gem_inventory_panel.gd" id="7_u6q7p"]
+[ext_resource type="Texture2D" path="res://resource/image/gem_inventory_panel_base_212x456.png" id="8_8jdgq"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gem_inventory_panel_bg"]
+texture = ExtResource("8_8jdgq")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
 
 [node name="BattlePage" type="Control" unique_id=1350352959]
 layout_mode = 3
@@ -89,6 +97,7 @@ offset_right = -24.0
 offset_bottom = 228.0
 grow_horizontal = 0
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_gem_inventory_panel_bg")
 script = ExtResource("7_u6q7p")
 
 [node name="MarginContainer" type="MarginContainer" parent="HudLayer/GemInventoryPanel" unique_id=1191061827]

@@ -2,6 +2,7 @@ extends PanelContainer
 class_name GemInventoryPanel
 
 const GROUP_NAME := "gem_inventory"
+const SLOT_BACKGROUND_TEXTURE := preload("res://resource/image/gem_inventory_slot_bg_48x48.png")
 
 @export var title := "宝石背包"
 @export var columns := 3
@@ -11,6 +12,9 @@ const GROUP_NAME := "gem_inventory"
 
 var _gems: Array[MapGem] = []
 var _drag_layer: Node = null
+var _slot_style_normal: StyleBoxTexture = null
+var _slot_style_hover: StyleBoxTexture = null
+var _slot_style_pressed: StyleBoxTexture = null
 
 @onready var _title_label: Label = $MarginContainer/VBoxContainer/TitleLabel
 @onready var _grid_container: GridContainer = $MarginContainer/VBoxContainer/GridContainer
@@ -21,6 +25,7 @@ func _ready() -> void:
 	add_to_group(GROUP_NAME)
 	_drag_layer = get_node_or_null(drag_layer_path)
 	_title_label.text = title
+	_prepare_slot_styles()
 	_build_slots()
 	_add_debug_gems()
 
@@ -156,6 +161,7 @@ func _build_slots() -> void:
 		_slot.custom_minimum_size = Vector2(slot_size, slot_size)
 		_slot.focus_mode = Control.FOCUS_NONE
 		_slot.tooltip_text = "宝石槽 %d" % (_index + 1)
+		_apply_slot_style(_slot)
 		_slot.gui_input.connect(_on_slot_gui_input.bind(_index))
 		_grid_container.add_child(_slot)
 
@@ -187,6 +193,36 @@ func _refresh_slots() -> void:
 func _clear_slots() -> void:
 	for _child in _grid_container.get_children():
 		_child.queue_free()
+
+
+# 本类方法：准备背包槽位样式。
+func _prepare_slot_styles() -> void:
+	_slot_style_normal = _create_slot_style(Color(1.0, 1.0, 1.0, 1.0))
+	_slot_style_hover = _create_slot_style(Color(1.12, 1.08, 1.0, 1.0))
+	_slot_style_pressed = _create_slot_style(Color(0.82, 0.78, 0.72, 1.0))
+
+
+# 本类方法：为单个槽位创建可复用纹理样式。
+func _create_slot_style(_modulate_color: Color) -> StyleBoxTexture:
+	var _style := StyleBoxTexture.new()
+	_style.texture = SLOT_BACKGROUND_TEXTURE
+	_style.modulate_color = _modulate_color
+	_style.texture_margin_left = 8.0
+	_style.texture_margin_top = 8.0
+	_style.texture_margin_right = 8.0
+	_style.texture_margin_bottom = 8.0
+	return _style
+
+
+# 本类方法：应用背包槽位样式。
+func _apply_slot_style(_slot: Button) -> void:
+	if _slot == null:
+		return
+	_slot.add_theme_stylebox_override("normal", _slot_style_normal)
+	_slot.add_theme_stylebox_override("hover", _slot_style_hover)
+	_slot.add_theme_stylebox_override("pressed", _slot_style_pressed)
+	_slot.add_theme_stylebox_override("focus", _slot_style_hover)
+	_slot.add_theme_stylebox_override("disabled", _slot_style_normal)
 
 
 # 本类方法：临时添加测试宝石，后续接入真实掉落或初始背包后移除。
