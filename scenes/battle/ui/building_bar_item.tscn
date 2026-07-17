@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=4]
+
+[ext_resource type="Script" path="res://systems/battle/building_bar_item.gd" id="1_t15eq"]
+[ext_resource type="Texture2D" path="res://resource/image/defense_tower_icon_128x128.png" id="2_j5x3f"]
+
+[node name="BuildingBarItem" type="Button"]
+custom_minimum_size = Vector2(128, 128)
+mouse_default_cursor_shape = 2
+script = ExtResource("1_t15eq")
+display_name = "防御塔"
+icon_texture = ExtResource("2_j5x3f")

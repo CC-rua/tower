@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://debkjxr4hbwgi"]
 
 [ext_resource type="TileSet" uid="uid://bfnetx72545fi" path="res://resource/tilemap/ground.tres" id="1_0p2fk"]
+[ext_resource type="Script" uid="uid://hrb5bpgdyqpg" path="res://systems/battle/battle_page_hud_controller.gd" id="1_0v1cr"]
 [ext_resource type="TileSet" uid="uid://ckmiufqosapm2" path="res://resource/tilemap/road.tres" id="2_b18dr"]
 [ext_resource type="PackedScene" path="res://scenes/battle/objects/map_tower.tscn" id="2_mw2g7"]
 [ext_resource type="TileSet" uid="uid://barxdoimrr5we" path="res://resource/tilemap/decoration.tres" id="3_1gau0"]
@@ -8,7 +9,10 @@
 [ext_resource type="Script" uid="uid://dmsd7fr2odkk0" path="res://systems/battle/battle_map_controller.gd" id="5_06183"]
 [ext_resource type="Script" uid="uid://cv0alkgy125td" path="res://systems/battle/map_objects_controller.gd" id="6_1x2d6"]
 [ext_resource type="Script" uid="uid://bbclqhkx3i667" path="res://systems/battle/gem_inventory_panel.gd" id="7_u6q7p"]
-[ext_resource type="Texture2D" path="res://resource/image/gem_inventory_panel_base_212x456.png" id="8_8jdgq"]
+[ext_resource type="Texture2D" uid="uid://swtqix7x1ctv" path="res://resource/image/gem_inventory_panel_base_212x456.png" id="8_8jdgq"]
+[ext_resource type="Script" uid="uid://lx3j7jbebd3i" path="res://systems/battle/building_bar_panel.gd" id="9_ih12v"]
+[ext_resource type="Texture2D" uid="uid://bwkqg7ejqrho3" path="res://resource/image/build_tower_button_icon_128x128.png" id="10_i4n34"]
+[ext_resource type="Texture2D" uid="uid://b7icybfvvitsa" path="res://resource/image/building_bar_panel_base_1024x192.png" id="11_dkrto"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gem_inventory_panel_bg"]
 texture = ExtResource("8_8jdgq")
@@ -17,6 +21,15 @@ texture_margin_top = 24.0
 texture_margin_right = 24.0
 texture_margin_bottom = 24.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_building_bar_panel_bg"]
+texture = ExtResource("11_dkrto")
+texture_margin_left = 64.0
+texture_margin_top = 32.0
+texture_margin_right = 64.0
+texture_margin_bottom = 32.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_building_bar_toggle"]
+
 [node name="BattlePage" type="Control" unique_id=1350352959]
 layout_mode = 3
 anchors_preset = 15
@@ -24,23 +37,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="Label" type="Label" parent="." unique_id=1854755529]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -81.0
-offset_top = -539.0
-offset_right = 99.0
-offset_bottom = -515.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "战斗场景"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="MapObjects" type="Node2D" parent="." unique_id=1134827041]
 z_index = 10
@@ -85,7 +81,21 @@ script = ExtResource("5_06183")
 [node name="HudLayer" type="CanvasLayer" parent="." unique_id=623277010]
 layer = 20
 
-[node name="GemInventoryPanel" type="PanelContainer" parent="HudLayer" unique_id=1482782345]
+[node name="HudRoot" type="Control" parent="HudLayer" unique_id=205447811]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0v1cr")
+
+[node name="PlacementPreview" type="Sprite2D" parent="HudLayer/HudRoot" unique_id=1771048300]
+visible = false
+modulate = Color(1, 1, 1, 0.72)
+z_index = 30
+
+[node name="GemInventoryPanel" type="PanelContainer" parent="HudLayer/HudRoot" unique_id=1482782345]
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
@@ -100,24 +110,84 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_gem_inventory_panel_bg")
 script = ExtResource("7_u6q7p")
 
-[node name="MarginContainer" type="MarginContainer" parent="HudLayer/GemInventoryPanel" unique_id=1191061827]
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemInventoryPanel" unique_id=1191061827]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/GemInventoryPanel/MarginContainer" unique_id=1959755850]
+[node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/HudRoot/GemInventoryPanel/MarginContainer" unique_id=1959755850]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleLabel" type="Label" parent="HudLayer/GemInventoryPanel/MarginContainer/VBoxContainer" unique_id=1505237062]
+[node name="TitleLabel" type="Label" parent="HudLayer/HudRoot/GemInventoryPanel/MarginContainer/VBoxContainer" unique_id=1505237062]
 layout_mode = 2
 text = "宝石背包"
 horizontal_alignment = 1
 
-[node name="GridContainer" type="GridContainer" parent="HudLayer/GemInventoryPanel/MarginContainer/VBoxContainer" unique_id=1347560938]
+[node name="GridContainer" type="GridContainer" parent="HudLayer/HudRoot/GemInventoryPanel/MarginContainer/VBoxContainer" unique_id=1347560938]
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 3
+
+[node name="BuildingBarPanel" type="PanelContainer" parent="HudLayer/HudRoot" unique_id=514442239]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 72.0
+offset_top = -272.0
+offset_right = -228.0
+offset_bottom = -79.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxTexture_building_bar_panel_bg")
+script = ExtResource("9_ih12v")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/BuildingBarPanel" unique_id=1054331250]
+layout_mode = 2
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/HudRoot/BuildingBarPanel/MarginContainer" unique_id=1676441340]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HudLayer/HudRoot/BuildingBarPanel/MarginContainer/VBoxContainer" unique_id=82842986]
+custom_minimum_size = Vector2(0, 136)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SlotContainer" type="HBoxContainer" parent="HudLayer/HudRoot/BuildingBarPanel/MarginContainer/VBoxContainer/ScrollContainer" unique_id=2050871464]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BuildingBarToggleButton" type="Button" parent="HudLayer/HudRoot" unique_id=1126766140]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -204.0
+offset_top = -204.0
+offset_right = -76.0
+offset_bottom = -76.0
+grow_horizontal = 0
+grow_vertical = 0
+tooltip_text = "关闭建筑栏"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_building_bar_toggle")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_building_bar_toggle")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_building_bar_toggle")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_building_bar_toggle")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_building_bar_toggle")
+toggle_mode = true
+icon = ExtResource("10_i4n34")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[connection signal="pressed" from="HudLayer/HudRoot/BuildingBarToggleButton" to="HudLayer/HudRoot" method="_on_building_bar_toggle_button_pressed"]
