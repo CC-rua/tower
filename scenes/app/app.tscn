@@ -22,8 +22,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="LevelRoot" type="Node2D" parent="." unique_id=1915215757]
-
 [node name="EntityRoot" type="Node2D" parent="." unique_id=500339088]
 
 [node name="EffectRoot" type="Node2D" parent="." unique_id=468442382]
@@ -41,15 +39,15 @@ offset_bottom = 40.0
 layer = 20
 
 [node name="PauseRoot" type="Control" parent="PauseLayer" unique_id=1256319054]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-visible = false
 
-[node name="Overlay" type="ColorRect" parent="PauseLayer/PauseRoot"]
+[node name="Overlay" type="ColorRect" parent="PauseLayer/PauseRoot" unique_id=1588732398]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,7 +56,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.55)
 
-[node name="CenterContainer" type="CenterContainer" parent="PauseLayer/PauseRoot"]
+[node name="CenterContainer" type="CenterContainer" parent="PauseLayer/PauseRoot" unique_id=80707201]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,32 +64,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="PauseLayer/PauseRoot/CenterContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PauseLayer/PauseRoot/CenterContainer" unique_id=444543235]
 custom_minimum_size = Vector2(320, 220)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer" unique_id=1161916034]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer" unique_id=1292160035]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="TitleLabel" type="Label" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1848508168]
 layout_mode = 2
 text = "游戏暂停"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ResumeButton" type="Button" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1284886558]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "继续游戏"
 
-[node name="MainMenuButton" type="Button" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="MainMenuButton" type="Button" parent="PauseLayer/PauseRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1101258881]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "返回主界面"
