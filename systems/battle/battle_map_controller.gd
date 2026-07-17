@@ -71,6 +71,18 @@ func get_route_world_points(_route_id: String) -> Array[Vector2]:
 	return map_model.get_route_world_points(_route_id, _road_layer)
 
 
+# 本类方法：获取当前地图中已配置的路线标识。
+func get_route_ids() -> Array[String]:
+	var _route_ids: Array[String] = []
+	if map_model == null:
+		return _route_ids
+
+	for _route_id in map_model.routes.keys():
+		_route_ids.append(str(_route_id))
+
+	return _route_ids
+
+
 # 本类方法：判断指定格子是否允许放置塔位。
 func can_place_tower(_cell: Vector2i) -> bool:
 	if map_model == null:
