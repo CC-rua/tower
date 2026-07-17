@@ -38,16 +38,13 @@ func clear() -> void:
 func load_from_layers(
 	_ground_layer: TileMapLayer,
 	_road_layer: TileMapLayer,
-	_blocker_layer: TileMapLayer = null,
-	_marker_layer: TileMapLayer = null
+	_blocker_layer: TileMapLayer = null
 ) -> void:
 	clear()
 	load_ground_layer(_ground_layer)
 	load_road_layer(_road_layer)
 	load_blocker_layer(_blocker_layer)
-	read_marker_layer(_marker_layer)
 	build_astar_from_road(_road_layer)
-	build_routes_from_marker_points()
 
 
 # 本类方法：获取或创建指定格子的地图数据。
@@ -215,24 +212,31 @@ func load_blocker_layer(_layer: TileMapLayer) -> void:
 		_data.has_blocker = true
 
 
-# 本类方法：读取路径标记图层，识别起点、终点和路线关键点。
-func read_marker_layer(_layer: TileMapLayer) -> void:
-	if _layer == null:
+# 本类方法：读取路线标记节点，识别起点、终点和路线关键点。
+func load_routes_from_marker_nodes(_marker_root: Node) -> void:
+	_route_points.clear()
+	routes.clear()
+	if _marker_root == null:
 		return
 
-	for _cell in _layer.get_used_cells():
-		var _marker_type := _read_cell_custom_string(_layer, _cell, "marker_type", "")
-		var _marker_id := _read_cell_custom_string(_layer, _cell, "marker_id", "")
-		var _route_id := _read_cell_custom_string(_layer, _cell, "route_id", "")
-		var _order := _read_cell_custom_int(_layer, _cell, "order", 0)
+	for _route_node in _marker_root.get_children():
+		var _route_id := str(_route_node.name)
+		var _order := 0
+		for _child in _route_node.get_children():
+			var _marker := _child as RouteMarker
+			if _marker == null:
+				continue
 
-		if _marker_type == MARKER_TYPE_START and not _marker_id.is_empty():
-			starts[_marker_id] = _cell
-		elif _marker_type == MARKER_TYPE_END and not _marker_id.is_empty():
-			ends[_marker_id] = _cell
+			var _marker_type := _marker.get_marker_type_name()
+			if _marker_type == MARKER_TYPE_START:
+				starts["%s_start" % _route_id] = _marker.origin_cell
+			elif _marker_type == MARKER_TYPE_END:
+				ends["%s_end" % _route_id] = _marker.origin_cell
 
-		if not _route_id.is_empty():
-			_add_route_point(_route_id, _order, _cell, _marker_type)
+			_add_route_point(_route_id, _order, _marker.origin_cell, _marker_type)
+			_order += 10
+
+	build_routes_from_marker_points()
 
 
 # 本类方法：根据 Road 图层构建 AStarGrid2D，非道路格子会被标记为 solid。
@@ -314,30 +318,6 @@ func _build_route_cells_from_points(_points: Array) -> Array[Vector2i]:
 			_route_cells.append(_segment[_segment_index])
 
 	return _route_cells
-
-
-# 本类方法：读取指定格子的字符串自定义数据。
-func _read_cell_custom_string(_layer: TileMapLayer, _cell: Vector2i, _key: String, _default_value: String) -> String:
-	var _tile_data := _layer.get_cell_tile_data(_cell)
-	if _tile_data == null:
-		return _default_value
-
-	var _value = _tile_data.get_custom_data(_key)
-	if _value == null:
-		return _default_value
-	return str(_value)
-
-
-# 本类方法：读取指定格子的整数自定义数据。
-func _read_cell_custom_int(_layer: TileMapLayer, _cell: Vector2i, _key: String, _default_value: int) -> int:
-	var _tile_data := _layer.get_cell_tile_data(_cell)
-	if _tile_data == null:
-		return _default_value
-
-	var _value = _tile_data.get_custom_data(_key)
-	if _value == null:
-		return _default_value
-	return int(_value)
 
 
 # 本类方法：路线关键点排序方法。

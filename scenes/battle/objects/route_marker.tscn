@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=4]
+
+[ext_resource type="Script" path="res://systems/battle/route_marker.gd" id="1_route_marker"]
+
+[node name="RouteMarker" type="Node2D"]
+script = ExtResource("1_route_marker")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_left = -28.0
+offset_top = -28.0
+offset_right = 28.0
+offset_bottom = 28.0
+color = Color(0.95, 0.62, 0.02, 0.92)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -28.0
+offset_top = -28.0
+offset_right = 28.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.65)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
+text = "W"
+horizontal_alignment = 1
+vertical_alignment = 1

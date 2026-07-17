@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://cg5olexwhjgeq"]
+[gd_scene format=4 uid="uid://cg5olexwhjgeq"]
 
 [ext_resource type="TileSet" uid="uid://bfnetx72545fi" path="res://resource/tilemap/ground.tres" id="1_0p2fk"]
 [ext_resource type="TileSet" uid="uid://ckmiufqosapm2" path="res://resource/tilemap/road.tres" id="2_b18dr"]
@@ -7,7 +7,9 @@
 [ext_resource type="TileSet" uid="uid://ci76x3vmv81x8" path="res://resource/tilemap/decoration_128.tres" id="4_psyvj"]
 [ext_resource type="Script" uid="uid://dmsd7fr2odkk0" path="res://systems/battle/battle_map_controller.gd" id="5_06183"]
 [ext_resource type="Script" uid="uid://cv0alkgy125td" path="res://systems/battle/map_objects_controller.gd" id="6_1x2d6"]
-[ext_resource type="Script" path="res://systems/battle/enemy_controller.gd" id="7_enemy_controller"]
+[ext_resource type="Script" uid="uid://cotmdf6svcntq" path="res://systems/battle/enemy_controller.gd" id="7_enemy_controller"]
+[ext_resource type="Script" uid="uid://bag21185j6x2p" path="res://systems/battle/route_marker_controller.gd" id="8_route_marker_controller"]
+[ext_resource type="PackedScene" path="res://scenes/battle/objects/route_marker.tscn" id="9_route_marker"]
 
 [node name="Level001" type="Node2D" unique_id=1350352959]
 
@@ -19,8 +21,6 @@ script = ExtResource("6_1x2d6")
 
 [node name="Towers" type="Node2D" parent="MapObjects" unique_id=2036098026]
 
-[node name="Enemies" type="Node2D" parent="MapObjects"]
-
 [node name="MapTower" parent="MapObjects/Towers" unique_id=707254711 instance=ExtResource("2_mw2g7")]
 position = Vector2(480, 224)
 origin_cell = Vector2i(7, 3)
@@ -28,6 +28,8 @@ origin_cell = Vector2i(7, 3)
 [node name="MapTower2" parent="MapObjects/Towers" unique_id=568096841 instance=ExtResource("2_mw2g7")]
 position = Vector2(672, 224)
 origin_cell = Vector2i(10, 3)
+
+[node name="Enemies" type="Node2D" parent="MapObjects" unique_id=2086332231]
 
 [node name="TileMap" type="Node" parent="." unique_id=1062314583]
 
@@ -41,8 +43,6 @@ tile_set = ExtResource("2_b18dr")
 
 [node name="Blocker" type="TileMapLayer" parent="TileMap" unique_id=235013631]
 
-[node name="Marker" type="TileMapLayer" parent="TileMap" unique_id=728412742]
-
 [node name="Decoration" type="TileMapLayer" parent="TileMap" unique_id=1953379109]
 tile_map_data = PackedByteArray("AAAMAAkAAAAAAAAAAAANAAoAAAAAAAAAAAAPAAkAAAAAAAAAAAAAAAAAAAABAAEAAAAHAAEAAAACAAMAAAAWAAoAAAAAAAQAAAAbAAcAAAABAAQAAAALAAoAAQAAAAIAAAANAA8AAQAAAAIAAAAQAAAAAQACAAAAAAASAAIAAQABAAAAAAAUAAAAAQACAAQAAAA=")
 tile_set = ExtResource("3_1gau0")
@@ -50,8 +50,44 @@ tile_set = ExtResource("3_1gau0")
 [node name="Decoration_128" type="TileMapLayer" parent="TileMap" unique_id=242581386]
 tile_set = ExtResource("4_psyvj")
 
+[node name="Marker" type="Node2D" parent="." unique_id=1885823412]
+z_index = 10
+script = ExtResource("8_route_marker_controller")
+
+[node name="route_001" type="Node2D" parent="Marker" unique_id=966152680]
+
+[node name="Start" parent="Marker/route_001" unique_id=135457734 instance=ExtResource("9_route_marker")]
+position = Vector2(544, 32)
+marker_type = 0
+origin_cell = Vector2i(8, 0)
+
+[node name="Point001" parent="Marker/route_001" unique_id=1811046043 instance=ExtResource("9_route_marker")]
+position = Vector2(544, 800)
+origin_cell = Vector2i(8, 12)
+
+[node name="Point002" parent="Marker/route_001" unique_id=2143713186 instance=ExtResource("9_route_marker")]
+position = Vector2(800, 800)
+origin_cell = Vector2i(12, 12)
+
+[node name="Point003" parent="Marker/route_001" unique_id=79022617 instance=ExtResource("9_route_marker")]
+position = Vector2(800, 736)
+origin_cell = Vector2i(12, 11)
+
+[node name="Point004" parent="Marker/route_001" unique_id=1911809702 instance=ExtResource("9_route_marker")]
+position = Vector2(1120, 736)
+origin_cell = Vector2i(17, 11)
+
+[node name="Point005" parent="Marker/route_001" unique_id=1662592134 instance=ExtResource("9_route_marker")]
+position = Vector2(1120, 992)
+origin_cell = Vector2i(17, 15)
+
+[node name="End" parent="Marker/route_001" unique_id=2051200582 instance=ExtResource("9_route_marker")]
+position = Vector2(1888, 992)
+marker_type = 2
+origin_cell = Vector2i(29, 15)
+
 [node name="BattleMapController" type="Node" parent="." unique_id=537986881]
 script = ExtResource("5_06183")
 
-[node name="EnemyController" type="Node" parent="."]
+[node name="EnemyController" type="Node" parent="." unique_id=1712779266]
 script = ExtResource("7_enemy_controller")

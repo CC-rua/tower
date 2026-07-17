@@ -8,7 +8,7 @@ const DEFAULT_TOWER_SCENE := preload("res://scenes/battle/objects/map_tower.tscn
 @export var ground_layer_path := NodePath("../TileMap/Ground")
 @export var road_layer_path := NodePath("../TileMap/Road")
 @export var blocker_layer_path := NodePath("../TileMap/Blocker")
-@export var marker_layer_path := NodePath("../TileMap/Marker")
+@export var marker_root_path := NodePath("../Marker")
 @export var obstacle_root_path := NodePath("../MapObjects/Obstacles")
 @export var tower_root_path := NodePath("../MapObjects/Towers")
 @export var tower_scene: PackedScene = DEFAULT_TOWER_SCENE
@@ -22,7 +22,7 @@ var map_model: BattleMapModel = null
 var _ground_layer: TileMapLayer = null
 var _road_layer: TileMapLayer = null
 var _blocker_layer: TileMapLayer = null
-var _marker_layer: TileMapLayer = null
+var _marker_root: Node = null
 var _obstacle_root: Node = null
 var _tower_root: Node = null
 
@@ -47,9 +47,9 @@ func setup_map() -> void:
 	map_model.load_from_layers(
 		_ground_layer,
 		_road_layer,
-		_blocker_layer,
-		_marker_layer
+		_blocker_layer
 	)
+	map_model.load_routes_from_marker_nodes(_marker_root)
 	_register_map_objects()
 	map_loaded.emit(map_model)
 
@@ -135,7 +135,7 @@ func _cache_layers() -> void:
 	_ground_layer = get_node_or_null(ground_layer_path) as TileMapLayer
 	_road_layer = get_node_or_null(road_layer_path) as TileMapLayer
 	_blocker_layer = get_node_or_null(blocker_layer_path) as TileMapLayer
-	_marker_layer = get_node_or_null(marker_layer_path) as TileMapLayer
+	_marker_root = get_node_or_null(marker_root_path)
 	_obstacle_root = get_node_or_null(obstacle_root_path)
 	_tower_root = get_node_or_null(tower_root_path)
 
