@@ -1,0 +1,36 @@
+[gd_resource type="TileSet" format=3 uid="uid://ci76x3vmv81x8"]
+
+[ext_resource type="Texture2D" uid="uid://cgobcipap70rn" path="res://resource/image/decor_object_tileset_128x128_5x5.png" id="1_8wgyv"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pew6l"]
+texture = ExtResource("1_8wgyv")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+1:0/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+4:4/0 = 0
+4:2/0 = 0
+4:1/0 = 0
+4:0/0 = 0
+3:0/0 = 0
+2:0/0 = 0
+3:1/0 = 0
+0:1/0 = 0
+0:2/0 = 0
+0:3/0 = 0
+1:2/0 = 0
+1:3/0 = 0
+1:4/0 = 0
+0:4/0 = 0
+2:3/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+
+[resource]
+tile_size = Vector2i(128, 128)
+sources/0 = SubResource("TileSetAtlasSource_pew6l")

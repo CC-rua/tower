@@ -1,0 +1,67 @@
+[gd_resource type="TileSet" format=3 uid="uid://barxdoimrr5we"]
+
+[ext_resource type="Texture2D" uid="uid://i6exhwv1v43m" path="res://resource/image/ground_decor_tileset_64x64_5x5.png" id="1_rrrl2"]
+[ext_resource type="Texture2D" uid="uid://d01n8fnt4k7l3" path="res://resource/image/ground_decor_tileset_64x64_5x5_v2.png" id="2_x00o2"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x00o2"]
+texture = ExtResource("1_rrrl2")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+1:0/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+4:3/0 = 0
+4:4/0 = 0
+3:4/0 = 0
+2:4/0 = 0
+1:4/0 = 0
+1:3/0 = 0
+1:2/0 = 0
+1:1/0 = 0
+0:1/0 = 0
+0:2/0 = 0
+0:3/0 = 0
+0:4/0 = 0
+2:2/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+4:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4p8m1"]
+texture = ExtResource("2_x00o2")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+
+[resource]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_x00o2")
+sources/1 = SubResource("TileSetAtlasSource_4p8m1")
