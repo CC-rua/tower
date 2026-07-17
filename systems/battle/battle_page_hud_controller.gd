@@ -3,8 +3,8 @@ extends Control
 const DEFENSE_TOWER_BUILDING_ID := "defense_tower"
 const DEFENSE_TOWER_PREVIEW_TEXTURE := preload("res://resource/image/tower_base_64x64_opaque_center.png")
 
-@onready var _battle_map_controller: BattleMapController = $"../../BattleMapController"
-@onready var _ground_layer: TileMapLayer = $"../../TileMap/Ground"
+@onready var _battle_map_controller: BattleMapController = $"../../LevelRoot/CurrentLevel/BattleMapController"
+@onready var _ground_layer: TileMapLayer = $"../../LevelRoot/CurrentLevel/TileMap/Ground"
 @onready var _building_bar_panel: BuildingBarPanel = $BuildingBarPanel
 @onready var _gem_inventory_panel: Control = $GemInventoryPanel
 @onready var _building_bar_toggle_button: Button = $BuildingBarToggleButton
