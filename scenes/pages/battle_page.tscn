@@ -2,8 +2,11 @@
 
 [ext_resource type="TileSet" uid="uid://bfnetx72545fi" path="res://resource/tilemap/ground.tres" id="1_0p2fk"]
 [ext_resource type="TileSet" uid="uid://ckmiufqosapm2" path="res://resource/tilemap/road.tres" id="2_b18dr"]
+[ext_resource type="PackedScene" path="res://scenes/battle/objects/map_tower.tscn" id="2_mw2g7"]
 [ext_resource type="TileSet" uid="uid://barxdoimrr5we" path="res://resource/tilemap/decoration.tres" id="3_1gau0"]
 [ext_resource type="TileSet" uid="uid://ci76x3vmv81x8" path="res://resource/tilemap/decoration_128.tres" id="4_psyvj"]
+[ext_resource type="Script" uid="uid://dmsd7fr2odkk0" path="res://systems/battle/battle_map_controller.gd" id="5_06183"]
+[ext_resource type="Script" uid="uid://cv0alkgy125td" path="res://systems/battle/map_objects_controller.gd" id="6_1x2d6"]
 
 [node name="BattlePage" type="Control" unique_id=1350352959]
 layout_mode = 3
@@ -30,6 +33,18 @@ text = "战斗场景"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="MapObjects" type="Node2D" parent="." unique_id=1134827041]
+z_index = 10
+script = ExtResource("6_1x2d6")
+
+[node name="Obstacles" type="Node2D" parent="MapObjects" unique_id=992475670]
+
+[node name="Towers" type="Node2D" parent="MapObjects" unique_id=2036098026]
+
+[node name="MapTower" parent="MapObjects/Towers" unique_id=707254711 instance=ExtResource("2_mw2g7")]
+position = Vector2(480, 224)
+origin_cell = Vector2i(7, 3)
+
 [node name="TileMap" type="Node" parent="." unique_id=1062314583]
 
 [node name="Ground" type="TileMapLayer" parent="TileMap" unique_id=2075997659]
@@ -40,9 +55,16 @@ tile_set = ExtResource("1_0p2fk")
 tile_map_data = PackedByteArray("AAAIAAAABQABAAEAAAAIAAEABQADAAAAAAAIAAIABQAAAAAAAAAIAAMABQAEAAAAAAAIAAQABQAAAAEAAAAIAAUABQABAAEAAAAIAAYABQAAAAEAAAAIAAcABQAAAAAAAAAIAAgABQACAAEAAAAIAAkABQADAAEAAAAIAAoABQAEAAAAAAAIAAsABQABAAAAAAAIAAwABQABAAQAAAAJAAwABQACAAIAAAAKAAwABQAEAAMAAAALAAwABQAEAAIAAAAMAAwABQAAAAQAAAAOAAsABQAAAAIAAAAPAAsABQADAAMAAAAMAAsABQADAAQAAAANAAsABQADAAIAAAAQAAsABQAAAAIAAAARAAsABQACAAQAAAARAAwABQAEAAAAAAARAA0ABQACAAEAAAARAA4ABQAEAAAAAAARAA8ABQAEAAQAAAASAA8ABQACAAIAAAATAA8ABQAEAAIAAAAUAA8ABQACAAMAAAAVAA8ABQABAAIAAAAWAA8ABQAAAAIAAAAXAA8ABQABAAIAAAAYAA8ABQAAAAMAAAAZAA8ABQAEAAIAAAAaAA8ABQADAAMAAAAbAA8ABQAEAAIAAAAcAA8ABQAEAAIAAAAdAA8ABQAEAAIAAAA=")
 tile_set = ExtResource("2_b18dr")
 
+[node name="Blocker" type="TileMapLayer" parent="TileMap" unique_id=235013631]
+
+[node name="Marker" type="TileMapLayer" parent="TileMap" unique_id=728412742]
+
 [node name="Decoration" type="TileMapLayer" parent="TileMap" unique_id=1953379109]
 tile_map_data = PackedByteArray("AAAMAAkAAAAAAAAAAAANAAoAAAAAAAAAAAAPAAkAAAAAAAAAAAAAAAAAAAABAAEAAAAHAAEAAAACAAMAAAAWAAoAAAAAAAQAAAAbAAcAAAABAAQAAAALAAoAAQAAAAIAAAANAA8AAQAAAAIAAAAQAAAAAQACAAAAAAASAAIAAQABAAAAAAAUAAAAAQACAAQAAAA=")
 tile_set = ExtResource("3_1gau0")
 
 [node name="Decoration_128" type="TileMapLayer" parent="TileMap" unique_id=242581386]
 tile_set = ExtResource("4_psyvj")
+
+[node name="BattleMapController" type="Node" parent="." unique_id=537986881]
+script = ExtResource("5_06183")

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://h3xfxf4nyb0x"]
+
+[ext_resource type="Script" uid="uid://dtey2rlxv1bhi" path="res://systems/battle/map_gem.gd" id="1_xh2q7"]
+[ext_resource type="Texture2D" uid="uid://bjwsakoadnovr" path="res://resource/image/icon.svg" id="2_gaafc"]
+
+[node name="Gem" type="Node2D" unique_id=935596402]
+script = ExtResource("1_xh2q7")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=90442835]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_gaafc")
