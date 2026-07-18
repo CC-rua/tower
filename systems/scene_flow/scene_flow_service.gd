@@ -2,11 +2,11 @@ extends RefCounted
 class_name SceneFlowService
 
 const PAGE_SCENE_PATHS := {
-	"boot": "res://scenes/pages/boot_page.tscn",
-	"main_menu": "res://scenes/pages/main_menu_page.tscn",
-	"level_select": "res://scenes/pages/level_select_page.tscn",
-	"battle": "res://scenes/pages/battle_page.tscn",
-	"result": "res://scenes/pages/result_page.tscn",
+	"boot": "res://scenes/pages/boot/boot_page.tscn",
+	"main_menu": "res://scenes/pages/main_menu/main_menu_page.tscn",
+	"level_select": "res://scenes/pages/level_select/level_select_page.tscn",
+	"battle": "res://scenes/pages/battle/battle_page.tscn",
+	"result": "res://scenes/pages/result/result_page.tscn",
 }
 const PAGE_TRANSITION_OPTIONS := {
 	"speed": 2.0,

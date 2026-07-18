@@ -1,9 +1,9 @@
 extends RefCounted
 class_name BattleMapModel
 
-const MapCellDataScript = preload("res://systems/battle/map_cell_data.gd")
-const BattleRoutePointScript = preload("res://systems/battle/battle_route_point.gd")
-const BattleRouteDataScript = preload("res://systems/battle/battle_route_data.gd")
+const MapCellDataScript = preload("res://scenes/battle/levels/script/map_cell_data.gd")
+const BattleRoutePointScript = preload("res://scenes/battle/levels/script/battle_route_point.gd")
+const BattleRouteDataScript = preload("res://scenes/battle/levels/script/battle_route_data.gd")
 
 const MARKER_TYPE_START := "start"
 const MARKER_TYPE_END := "end"

@@ -1,9 +1,9 @@
 extends Node
 class_name BattleMapController
 
-const BattleMapModelScript = preload("res://systems/battle/battle_map_model.gd")
-const MapTowerScript = preload("res://systems/battle/map_tower.gd")
-const DEFAULT_TOWER_SCENE := preload("res://scenes/battle/objects/map_tower.tscn")
+const BattleMapModelScript = preload("res://scenes/battle/levels/script/battle_map_model.gd")
+const MapTowerScript = preload("res://scenes/battle/prefab/tower/map_tower.gd")
+const DEFAULT_TOWER_SCENE := preload("res://scenes/battle/prefab/tower/map_tower.tscn")
 
 @export var ground_layer_path := NodePath("../TileMap/Ground")
 @export var road_layer_path := NodePath("../TileMap/Road")

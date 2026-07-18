@@ -2,7 +2,7 @@
 extends Node2D
 class_name RouteMarkerController
 
-const ROUTE_MARKER_SCRIPT_PATH := "res://systems/battle/route_marker.gd"
+const ROUTE_MARKER_SCRIPT_PATH := "res://scenes/battle/prefab/route_marker/route_marker.gd"
 const MARKER_TYPE_START := 0
 const MARKER_TYPE_END := 2
 

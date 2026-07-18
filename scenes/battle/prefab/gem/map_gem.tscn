@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://h3xfxf4nyb0x"]
 
-[ext_resource type="Script" uid="uid://dtey2rlxv1bhi" path="res://systems/battle/map_gem.gd" id="1_xh2q7"]
+[ext_resource type="Script" uid="uid://dtey2rlxv1bhi" path="res://scenes/battle/prefab/gem/map_gem.gd" id="1_xh2q7"]
 [ext_resource type="Texture2D" uid="uid://bjwsakoadnovr" path="res://resource/image/icon.svg" id="2_gaafc"]
 
 [node name="Gem" type="Node2D" unique_id=935596402]

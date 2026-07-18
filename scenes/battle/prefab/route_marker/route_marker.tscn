@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=4]
+[gd_scene format=4]
 
-[ext_resource type="Script" path="res://systems/battle/route_marker.gd" id="1_route_marker"]
+[ext_resource type="Script" uid="uid://b78phxgfaxwok" path="res://scenes/battle/prefab/route_marker/route_marker.gd" id="1_route_marker"]
 
 [node name="RouteMarker" type="Node2D"]
 script = ExtResource("1_route_marker")

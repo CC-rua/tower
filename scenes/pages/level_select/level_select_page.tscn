@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=4]
 
-[ext_resource type="Script" path="res://scenes/pages/level_select_page.gd" id="1_t3cla"]
+[ext_resource type="Script" path="res://scenes/pages/level_select/level_select_page.gd" id="1_t3cla"]
 
 [node name="LevelSelectPage" type="Control"]
 layout_mode = 3

@@ -3,7 +3,7 @@ class_name BuildingBarPanel
 
 signal building_selected(building_id: String)
 
-const BuildingBarItemScene := preload("res://scenes/battle/ui/building_bar_item.tscn")
+const BuildingBarItemScene := preload("res://scenes/battle/prefab/building_bar_item/building_bar_item.tscn")
 const DEFENSE_TOWER_ICON := preload("res://resource/image/defense_tower_icon_128x128.png")
 const DEFAULT_BUILDINGS := [
 	{
