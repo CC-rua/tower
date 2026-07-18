@@ -1,7 +1,11 @@
 extends Control
 
 const DEFENSE_TOWER_BUILDING_ID := "defense_tower"
+const GEM_PRODUCER_BUILDING_ID := "gem_producer"
+const GEM_CRAFTER_BUILDING_ID := "gem_crafter"
 const DEFENSE_TOWER_PREVIEW_TEXTURE := preload("res://resource/image/tower_base_64x64_opaque_center.png")
+const GEM_PRODUCER_PREVIEW_TEXTURE := preload("res://resource/image/gem_producer_building_128x128.png")
+const GEM_CRAFTER_PREVIEW_TEXTURE := preload("res://resource/image/gem_synthesizer_building_128x128.png")
 
 @onready var _battle_map_controller: BattleMapController = $"../../LevelRoot/CurrentLevel/BattleMapController"
 @onready var _enemy_controller: EnemyController = $"../../LevelRoot/CurrentLevel/EnemyController"
@@ -83,7 +87,7 @@ func _on_building_bar_toggle_button_pressed() -> void:
 
 
 func _on_building_bar_panel_building_selected(building_id: String) -> void:
-	if building_id == DEFENSE_TOWER_BUILDING_ID:
+	if _is_supported_building_id(building_id):
 		_start_building_placement(building_id)
 
 
@@ -264,7 +268,7 @@ func _update_placement_preview() -> void:
 
 	_hovered_cell = _cell
 	if _is_valid_cell:
-		_placement_preview.global_position = _ground_layer.to_global(_ground_layer.map_to_local(_cell))
+		_placement_preview.global_position = _ground_layer.to_global(_cell_rect_to_ground_local_position(_cell, _get_pending_building_size()))
 	else:
 		_placement_preview.global_position = get_global_mouse_position()
 
@@ -285,6 +289,22 @@ func _try_place_pending_building() -> bool:
 		_finish_building_placement(true)
 		return true
 
+	if _pending_building_id == GEM_PRODUCER_BUILDING_ID:
+		var _producer: GemProducerBuilding = _battle_map_controller.place_gem_producer(_cell, GEM_PRODUCER_BUILDING_ID)
+		if _producer == null:
+			return false
+
+		_finish_building_placement(true)
+		return true
+
+	if _pending_building_id == GEM_CRAFTER_BUILDING_ID:
+		var _crafter: GemCrafterBuilding = _battle_map_controller.place_gem_crafter(_cell, GEM_CRAFTER_BUILDING_ID)
+		if _crafter == null:
+			return false
+
+		_finish_building_placement(true)
+		return true
+
 	return false
 
 
@@ -296,11 +316,13 @@ func _get_hovered_ground_cell() -> Vector2i:
 func _can_place_pending_building_at(cell: Vector2i) -> bool:
 	if _battle_map_controller == null or _ground_layer == null:
 		return false
-	if not _ground_layer.get_used_rect().has_point(cell):
+	if not _is_building_rect_inside_ground(cell, _get_pending_building_size()):
 		return false
 
 	if _pending_building_id == DEFENSE_TOWER_BUILDING_ID:
 		return _battle_map_controller.can_place_tower(cell)
+	if _pending_building_id == GEM_PRODUCER_BUILDING_ID or _pending_building_id == GEM_CRAFTER_BUILDING_ID:
+		return _battle_map_controller.can_place_building(cell, _get_pending_building_size())
 
 	return false
 
@@ -308,7 +330,40 @@ func _can_place_pending_building_at(cell: Vector2i) -> bool:
 func _get_building_preview_texture(building_id: String) -> Texture2D:
 	if building_id == DEFENSE_TOWER_BUILDING_ID:
 		return DEFENSE_TOWER_PREVIEW_TEXTURE
+	if building_id == GEM_PRODUCER_BUILDING_ID:
+		return GEM_PRODUCER_PREVIEW_TEXTURE
+	if building_id == GEM_CRAFTER_BUILDING_ID:
+		return GEM_CRAFTER_PREVIEW_TEXTURE
 	return null
+
+
+func _get_pending_building_size() -> Vector2i:
+	if _pending_building_id == GEM_PRODUCER_BUILDING_ID or _pending_building_id == GEM_CRAFTER_BUILDING_ID:
+		return Vector2i(2, 2)
+	return Vector2i.ONE
+
+
+func _cell_rect_to_ground_local_position(cell: Vector2i, size_in_cells: Vector2i = Vector2i.ONE) -> Vector2:
+	var _safe_size := Vector2i(max(size_in_cells.x, 1), max(size_in_cells.y, 1))
+	var _tile_size: Vector2 = Vector2(_ground_layer.tile_set.tile_size) if _ground_layer.tile_set != null else Vector2(64.0, 64.0)
+	return Vector2(
+		(cell.x + _safe_size.x * 0.5) * _tile_size.x,
+		(cell.y + _safe_size.y * 0.5) * _tile_size.y
+	)
+
+
+func _is_building_rect_inside_ground(cell: Vector2i, size_in_cells: Vector2i) -> bool:
+	var _used_rect: Rect2i = _ground_layer.get_used_rect()
+	var _safe_size := Vector2i(max(size_in_cells.x, 1), max(size_in_cells.y, 1))
+	for _x in range(_safe_size.x):
+		for _y in range(_safe_size.y):
+			if not _used_rect.has_point(cell + Vector2i(_x, _y)):
+				return false
+	return true
+
+
+func _is_supported_building_id(building_id: String) -> bool:
+	return building_id == DEFENSE_TOWER_BUILDING_ID or building_id == GEM_PRODUCER_BUILDING_ID or building_id == GEM_CRAFTER_BUILDING_ID
 
 
 func _set_building_selection_mode(is_enabled: bool) -> void:

@@ -1,15 +1,14 @@
-extends Node2D
+extends MapBuilding
 class_name MapTower
 
-const GROUP_NAME := "map_tower"
+const TOWER_GROUP_NAME := "map_tower"
+const SLOT_TOWER_CORE := "tower_core"
 const SOURCE_PRESET := "preset"
 const SOURCE_PLAYER := "player"
 const CLICK_RADIUS := 32.0
 const DRAG_START_DISTANCE := 8.0
 
 @export var tower_id := ""
-@export var origin_cell := Vector2i.ZERO
-@export var size_in_cells := Vector2i.ONE
 @export var source := SOURCE_PRESET
 
 # 宝石提供攻击、减速等效果；为空时该对象就是一个塔基。
@@ -18,12 +17,12 @@ var _is_pending_gem_drag := false
 var _pending_drag_start_position := Vector2.ZERO
 
 @onready var _base_sprite: Sprite2D = get_node_or_null("BaseSprite") as Sprite2D
-@onready var _gem_socket: Node2D = get_node_or_null("GemSocket") as Node2D
 
 
 # 继承方法：进入场景树后登记塔位分组，供宝石拖拽查找。
 func _ready() -> void:
-	add_to_group(GROUP_NAME)
+	super._ready()
+	add_to_group(TOWER_GROUP_NAME)
 	set_process(false)
 
 
@@ -76,21 +75,9 @@ func _input(_event: InputEvent) -> void:
 
 # 本类方法：初始化地图塔位数据。
 func setup(_origin_cell: Vector2i, _source: String = SOURCE_PLAYER, _tower_id: String = "") -> void:
-	origin_cell = _origin_cell
+	setup_building(_origin_cell, MapBuilding.TYPE_TOWER, _tower_id)
 	source = _source
 	tower_id = _tower_id
-
-
-# 本类方法：获取该塔位占用的全部逻辑格。
-func get_occupied_cells() -> Array[Vector2i]:
-	var _cells: Array[Vector2i] = []
-	var _safe_size := Vector2i(max(size_in_cells.x, 1), max(size_in_cells.y, 1))
-
-	for _x in range(_safe_size.x):
-		for _y in range(_safe_size.y):
-			_cells.append(origin_cell + Vector2i(_x, _y))
-
-	return _cells
 
 
 # 本类方法：判断当前是否已安装宝石。
@@ -104,25 +91,19 @@ func attach_gem(_gem_data: MapGem) -> bool:
 		return false
 
 	set_attach_highlight(false)
-	gem_data = _gem_data
-	if _gem_socket != null:
-		if _gem_data.get_parent() != null:
-			_gem_data.get_parent().remove_child(_gem_data)
-		_gem_socket.add_child(_gem_data)
-		_gem_data.position = Vector2.ZERO
-		_gem_data.z_index = 1
-		_gem_data.activate_attack(self)
+	if not attach_gem_to_slot(_gem_data, SLOT_TOWER_CORE):
+		return false
 
+	gem_data = _gem_data
+	_gem_data.activate_attack(self)
 	return true
 
 
 # 本类方法：移除宝石，使防御塔退回塔基状态。
 func detach_gem() -> MapGem:
-	var _old_gem_data := gem_data
+	var _old_gem_data := detach_gem_from_slot(SLOT_TOWER_CORE)
 	if _old_gem_data != null:
 		_old_gem_data.deactivate_attack()
-	if _old_gem_data != null and _old_gem_data.get_parent() == _gem_socket:
-		_gem_socket.remove_child(_old_gem_data)
 	gem_data = null
 	return _old_gem_data
 
@@ -137,6 +118,7 @@ func replace_gem(_gem_data: MapGem) -> MapGem:
 # 本类方法：设置宝石拖拽吸附高亮。
 func set_attach_highlight(_enabled: bool) -> void:
 	if _base_sprite == null:
+		super.set_attach_highlight(_enabled)
 		return
 
 	_base_sprite.modulate = Color(1.35, 1.25, 0.65, 1.0) if _enabled else Color.WHITE
@@ -179,7 +161,7 @@ func _clear_selected_gems() -> void:
 
 # 本类方法：查找鼠标下方是否存在已安装宝石的塔基。
 func _find_gem_tower_under_mouse() -> MapTower:
-	for _node in get_tree().get_nodes_in_group(GROUP_NAME):
+	for _node in get_tree().get_nodes_in_group(TOWER_GROUP_NAME):
 		var _tower := _node as MapTower
 		if _tower == null or not _tower.has_gem():
 			continue
@@ -214,3 +196,12 @@ func _find_inventory() -> GemInventoryPanel:
 		if _inventory != null:
 			return _inventory
 	return null
+
+
+func _ensure_default_gem_slots() -> void:
+	if has_gem_slot(SLOT_TOWER_CORE):
+		return
+
+	var _slot := BuildingGemSlot.new()
+	_slot.setup(SLOT_TOWER_CORE, BuildingGemSlot.SLOT_TYPE_TOWER_CORE, NodePath("GemSocket"))
+	add_gem_slot(_slot)

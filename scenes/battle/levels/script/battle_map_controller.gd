@@ -2,8 +2,11 @@ extends Node
 class_name BattleMapController
 
 const BattleMapModelScript = preload("res://scenes/battle/levels/script/battle_map_model.gd")
+const MapBuildingScript = preload("res://scenes/battle/prefab/building/map_building.gd")
 const MapTowerScript = preload("res://scenes/battle/prefab/tower/map_tower.gd")
 const DEFAULT_TOWER_SCENE := preload("res://scenes/battle/prefab/tower/map_tower.tscn")
+const DEFAULT_GEM_PRODUCER_SCENE := preload("res://scenes/battle/prefab/building/gem_producer_building.tscn")
+const DEFAULT_GEM_CRAFTER_SCENE := preload("res://scenes/battle/prefab/building/gem_crafter_building.tscn")
 
 @export var ground_layer_path := NodePath("../TileMap/Ground")
 @export var road_layer_path := NodePath("../TileMap/Road")
@@ -12,6 +15,8 @@ const DEFAULT_TOWER_SCENE := preload("res://scenes/battle/prefab/tower/map_tower
 @export var obstacle_root_path := NodePath("../MapObjects/Obstacles")
 @export var tower_root_path := NodePath("../MapObjects/Towers")
 @export var tower_scene: PackedScene = DEFAULT_TOWER_SCENE
+@export var gem_producer_scene: PackedScene = DEFAULT_GEM_PRODUCER_SCENE
+@export var gem_crafter_scene: PackedScene = DEFAULT_GEM_CRAFTER_SCENE
 
 # 地图逻辑装载完成后发出，怪物生成器、建塔系统可等待该信号。
 signal map_loaded(_map_model: BattleMapModel)
@@ -91,6 +96,13 @@ func can_place_tower(_cell: Vector2i) -> bool:
 	return map_model.can_place_tower(_cell)
 
 
+# 本类方法：判断指定格子是否允许放置通用建筑。
+func can_place_building(_cell: Vector2i, _size_in_cells: Vector2i = Vector2i.ONE) -> bool:
+	if map_model == null:
+		return false
+	return map_model.can_place_building(_cell, _size_in_cells)
+
+
 # 本类方法：判断指定格子是否存在可安装宝石的塔位。
 func can_attach_gem(_cell: Vector2i) -> bool:
 	if map_model == null:
@@ -113,6 +125,31 @@ func place_tower(_cell: Vector2i) -> MapTower:
 		return null
 
 	return _tower
+
+
+# 本类方法：创建一个通用功能建筑节点。具体经济/仓储/产出/合成建筑后续可传入专用场景。
+func place_building(_cell: Vector2i, _building_type: String, _building_id: String = "", _building_scene: PackedScene = null) -> MapBuilding:
+	if map_model == null:
+		return null
+	if not map_model.can_place_building(_cell, _get_building_scene_size(_building_scene)):
+		return null
+
+	var _building := _create_building_node(_cell, _building_type, _building_id, _building_scene)
+	if _building == null:
+		return null
+	if not map_model.register_building(_building):
+		_building.queue_free()
+		return null
+
+	return _building
+
+
+func place_gem_producer(_cell: Vector2i, _building_id: String = "gem_producer") -> GemProducerBuilding:
+	return place_building(_cell, MapBuilding.TYPE_GEM_PRODUCER, _building_id, gem_producer_scene) as GemProducerBuilding
+
+
+func place_gem_crafter(_cell: Vector2i, _building_id: String = "gem_crafter") -> GemCrafterBuilding:
+	return place_building(_cell, MapBuilding.TYPE_GEM_CRAFTER, _building_id, gem_crafter_scene) as GemCrafterBuilding
 
 
 # 本类方法：给指定格子的塔位安装宝石，使其成为防御塔。
@@ -154,9 +191,9 @@ func _register_map_objects() -> void:
 
 	if _tower_root != null:
 		for _child in _tower_root.get_children():
-			var _tower := _child as MapTower
-			if _tower != null:
-				map_model.register_tower(_tower)
+			var _building := _child as MapBuilding
+			if _building != null:
+				map_model.register_building(_building)
 
 
 # 本类方法：实例化塔位节点并放置到塔位根节点下。
@@ -179,14 +216,51 @@ func _create_tower_node(_cell: Vector2i) -> MapTower:
 	else:
 		add_child(_tower)
 
-	_tower.position = _cell_to_object_position(_cell)
+	_tower.position = _cell_to_object_position(_cell, _tower.size_in_cells)
 	return _tower
 
 
-# 本类方法：将逻辑格子坐标转换为 MapObjects 子节点坐标。
-func _cell_to_object_position(_cell: Vector2i) -> Vector2:
-	var _map_objects_controller := _tower_root.get_parent() as MapObjectsController if _tower_root != null else null
-	if _map_objects_controller != null:
-		return _map_objects_controller.cell_to_local_position(_cell)
+func _create_building_node(_cell: Vector2i, _building_type: String, _building_id: String, _building_scene: PackedScene = null) -> MapBuilding:
+	var _building: MapBuilding = null
 
-	return Vector2(_cell.x * 64 + 32, _cell.y * 64 + 32)
+	if _building_scene != null:
+		_building = _building_scene.instantiate() as MapBuilding
+	else:
+		_building = MapBuildingScript.new()
+
+	if _building == null:
+		push_error("BattleMapController: building scene must inherit MapBuilding.")
+		return null
+
+	_building.setup_building(_cell, _building_type, _building_id)
+
+	if _tower_root != null:
+		_tower_root.add_child(_building)
+	else:
+		add_child(_building)
+
+	_building.position = _cell_to_object_position(_cell, _building.size_in_cells)
+	return _building
+
+
+func _get_building_scene_size(_building_scene: PackedScene = null) -> Vector2i:
+	if _building_scene == null:
+		return Vector2i.ONE
+
+	var _building: MapBuilding = _building_scene.instantiate() as MapBuilding
+	if _building == null:
+		return Vector2i.ONE
+
+	var _size: Vector2i = _building.size_in_cells
+	_building.queue_free()
+	return Vector2i(max(_size.x, 1), max(_size.y, 1))
+
+
+# 本类方法：将逻辑格子坐标转换为 MapObjects 子节点坐标。
+func _cell_to_object_position(_cell: Vector2i, _size_in_cells: Vector2i = Vector2i.ONE) -> Vector2:
+	var _map_objects_controller: MapObjectsController = _tower_root.get_parent() as MapObjectsController if _tower_root != null else null
+	if _map_objects_controller != null:
+		return _map_objects_controller.cell_rect_to_local_position(_cell, _size_in_cells)
+
+	var _safe_size := Vector2i(max(_size_in_cells.x, 1), max(_size_in_cells.y, 1))
+	return Vector2((_cell.x + _safe_size.x * 0.5) * 64, (_cell.y + _safe_size.y * 0.5) * 64)

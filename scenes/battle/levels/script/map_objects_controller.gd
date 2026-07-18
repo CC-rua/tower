@@ -45,11 +45,20 @@ func snap_all_objects_to_grid_from_position() -> void:
 	_snap_children_from_position(_tower_root)
 
 
-# 本类方法：根据格子坐标获取对象层本地坐标。
+# 本类方法：根据单格坐标获取对象层本地坐标。
 func cell_to_local_position(_cell: Vector2i) -> Vector2:
 	return Vector2(
 		_cell.x * cell_size + cell_size * 0.5,
 		_cell.y * cell_size + cell_size * 0.5
+	)
+
+
+# 本类方法：根据左上格和占格尺寸获取对象层本地坐标，使对象位于占用矩形中心。
+func cell_rect_to_local_position(_origin_cell: Vector2i, _size_in_cells: Vector2i = Vector2i.ONE) -> Vector2:
+	var _safe_size := Vector2i(max(_size_in_cells.x, 1), max(_size_in_cells.y, 1))
+	return Vector2(
+		(_origin_cell.x + _safe_size.x * 0.5) * cell_size,
+		(_origin_cell.y + _safe_size.y * 0.5) * cell_size
 	)
 
 
@@ -69,15 +78,26 @@ func local_position_to_nearest_cell(_position: Vector2) -> Vector2i:
 	)
 
 
+# 本类方法：根据对象中心位置和占格尺寸反推出左上 origin_cell。
+func local_position_to_origin_cell(_position: Vector2, _size_in_cells: Vector2i = Vector2i.ONE) -> Vector2i:
+	var _safe_size := Vector2i(max(_size_in_cells.x, 1), max(_size_in_cells.y, 1))
+	return Vector2i(
+		floori(_position.x / cell_size - _safe_size.x * 0.5),
+		floori(_position.y / cell_size - _safe_size.y * 0.5)
+	)
+
+
 # 本类方法：将指定对象吸附到它的 origin_cell 对应格子中心。
 func snap_object_to_grid(_object: Node2D) -> void:
 	if _object == null:
 		return
 
 	if _object is MapObstacle:
-		_object.position = cell_to_local_position((_object as MapObstacle).origin_cell)
-	elif _object is MapTower:
-		_object.position = cell_to_local_position((_object as MapTower).origin_cell)
+		var _obstacle: MapObstacle = _object as MapObstacle
+		_object.position = cell_rect_to_local_position(_obstacle.origin_cell, _obstacle.size_in_cells)
+	elif _object is MapBuilding:
+		var _building: MapBuilding = _object as MapBuilding
+		_object.position = cell_rect_to_local_position(_building.origin_cell, _building.size_in_cells)
 
 
 # 本类方法：根据对象当前位置更新 origin_cell，并吸附到格子中心。
@@ -85,13 +105,16 @@ func snap_object_to_grid_from_position(_object: Node2D) -> void:
 	if _object == null:
 		return
 
-	var _cell := local_position_to_nearest_cell(_object.position)
 	if _object is MapObstacle:
-		(_object as MapObstacle).origin_cell = _cell
-		_object.position = cell_to_local_position(_cell)
-	elif _object is MapTower:
-		(_object as MapTower).origin_cell = _cell
-		_object.position = cell_to_local_position(_cell)
+		var _obstacle: MapObstacle = _object as MapObstacle
+		var _cell: Vector2i = local_position_to_origin_cell(_object.position, _obstacle.size_in_cells)
+		_obstacle.origin_cell = _cell
+		_object.position = cell_rect_to_local_position(_cell, _obstacle.size_in_cells)
+	elif _object is MapBuilding:
+		var _building: MapBuilding = _object as MapBuilding
+		var _cell: Vector2i = local_position_to_origin_cell(_object.position, _building.size_in_cells)
+		_building.origin_cell = _cell
+		_object.position = cell_rect_to_local_position(_cell, _building.size_in_cells)
 
 
 # 本类方法：缓存对象根节点。

@@ -63,8 +63,16 @@ func get_cell(_cell: Vector2i) -> MapCellData:
 
 # 本类方法：判断指定格子是否允许放置塔位。
 func can_place_tower(_cell: Vector2i) -> bool:
-	var _data := get_cell(_cell)
-	return _data != null and _data.can_place_tower()
+	return can_place_building(_cell, Vector2i.ONE)
+
+
+# 本类方法：判断指定格子是否允许放置通用建筑。
+func can_place_building(_cell: Vector2i, _size_in_cells: Vector2i = Vector2i.ONE) -> bool:
+	for _occupied_cell in _get_rect_cells(_cell, _size_in_cells):
+		var _data := get_cell(_occupied_cell)
+		if _data == null or not _data.can_place_building():
+			return false
+	return true
 
 
 # 本类方法：判断指定格子是否存在可安装宝石的塔位。
@@ -87,7 +95,7 @@ func register_obstacle(_obstacle: MapObstacle) -> bool:
 		if _data.obstacle_node != null and _data.obstacle_node != _obstacle:
 			push_warning("BattleMapModel: obstacle cell is already occupied: %s." % _cell)
 			return false
-		if _data.tower_node != null:
+		if _data.building_node != null or _data.tower_node != null:
 			push_warning("BattleMapModel: obstacle overlaps map object: %s." % _cell)
 			return false
 
@@ -108,32 +116,49 @@ func unregister_obstacle(_obstacle: MapObstacle) -> void:
 			_data.obstacle_node = null
 
 
-# 本类方法：登记塔位节点。
-func register_tower(_tower: MapTower) -> bool:
-	if _tower == null:
+# 本类方法：登记通用建筑节点。
+func register_building(_building: MapBuilding) -> bool:
+	if _building == null:
 		return false
 
-	for _cell in _tower.get_occupied_cells():
+	for _cell in _building.get_occupied_cells():
 		var _data := get_or_create_cell(_cell)
-		if not _data.can_place_tower():
-			push_warning("BattleMapModel: tower cannot be placed at cell: %s." % _cell)
+		if not _data.can_place_building():
+			push_warning("BattleMapModel: building cannot be placed at cell: %s." % _cell)
 			return false
 
-	for _cell in _tower.get_occupied_cells():
-		get_or_create_cell(_cell).tower_node = _tower
+	for _cell in _building.get_occupied_cells():
+		var _data := get_or_create_cell(_cell)
+		_data.building_node = _building
+		if _building is MapTower:
+			_data.tower_node = _building
 
 	return true
 
 
-# 本类方法：取消登记塔位节点。
-func unregister_tower(_tower: MapTower) -> void:
-	if _tower == null:
+# 本类方法：登记塔位节点。
+func register_tower(_tower: MapTower) -> bool:
+	return register_building(_tower)
+
+
+# 本类方法：取消登记通用建筑节点。
+func unregister_building(_building: MapBuilding) -> void:
+	if _building == null:
 		return
 
-	for _cell in _tower.get_occupied_cells():
+	for _cell in _building.get_occupied_cells():
 		var _data := get_cell(_cell)
-		if _data != null and _data.tower_node == _tower:
+		if _data == null:
+			continue
+		if _data.building_node == _building:
+			_data.building_node = null
+		if _data.tower_node == _building:
 			_data.tower_node = null
+
+
+# 本类方法：取消登记塔位节点。
+func unregister_tower(_tower: MapTower) -> void:
+	unregister_building(_tower)
 
 
 # 本类方法：给指定格子的塔位安装宝石。
@@ -323,3 +348,12 @@ func _build_route_cells_from_points(_points: Array) -> Array[Vector2i]:
 # 本类方法：路线关键点排序方法。
 func _sort_route_points(_a: BattleRoutePoint, _b: BattleRoutePoint) -> bool:
 	return _a.order < _b.order
+
+
+func _get_rect_cells(_origin_cell: Vector2i, _size_in_cells: Vector2i) -> Array[Vector2i]:
+	var _cells: Array[Vector2i] = []
+	var _safe_size := Vector2i(max(_size_in_cells.x, 1), max(_size_in_cells.y, 1))
+	for _x in range(_safe_size.x):
+		for _y in range(_safe_size.y):
+			_cells.append(_origin_cell + Vector2i(_x, _y))
+	return _cells

@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bmwxktaqtbkir"]
+
+[ext_resource type="Script" uid="uid://fglb1jcewfbx" path="res://scenes/battle/prefab/building/gem_producer_building.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dpeydghn85315" path="res://resource/image/gem_producer_building_128x128.png" id="2_pppfw"]
+
+[node name="GemProducerBuilding" type="Node2D" unique_id=2124050239]
+script = ExtResource("1_script")
+building_id = "gem_producer"
+building_type = "gem_producer"
+size_in_cells = Vector2i(2, 2)
+
+[node name="BaseSprite" type="Sprite2D" parent="." unique_id=610562696]
+modulate = Color(0.65, 1, 0.82, 1)
+texture = ExtResource("2_pppfw")
+
+[node name="OutputSocket" type="Node2D" parent="." unique_id=1142744669]
+
+[node name="StatusLabel" type="Label" parent="."]
+visible = false
+position = Vector2(-64, -78)
+size = Vector2(128, 22)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "生产 0.0s"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -327,23 +327,23 @@ layout_mode = 0
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 24.0
-offset_top = -180.0
+offset_top = -240.0
 offset_right = 292.0
-offset_bottom = 180.0
+offset_bottom = 240.0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_gem_detail_panel_bg")
 script = ExtResource("8_gem_detail")
 
 [node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel" unique_id=942857522]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer" unique_id=1368116883]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 6
 
 [node name="TitleLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer" unique_id=1467367926]
 layout_mode = 2
@@ -352,7 +352,7 @@ horizontal_alignment = 1
 
 [node name="ContentVBox" type="VBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer" unique_id=210432384]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="GemIdRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=1981263197]
 layout_mode = 2
