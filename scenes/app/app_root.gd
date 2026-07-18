@@ -4,10 +4,6 @@ extends Control
 @onready var _systems: Node = $Systems
 # 页面层节点，用于承载主菜单、关卡选择等整页 UI。
 @onready var _page_layer: Control = $PageLayer
-# 关卡根节点，用于承载战斗中的关卡内容。
-@onready var _level_root: Node2D = $LevelRoot
-# 实体根节点，用于承载角色、敌人和可交互实体。
-@onready var _entity_root: Node2D = $EntityRoot
 # 特效根节点，用于承载表现特效。
 @onready var _effect_root: Node2D = $EffectRoot
 # HUD 层节点，用于承载常驻界面。
@@ -52,17 +48,6 @@ func get_systems() -> Node:
 # 本类方法：返回页面层节点。
 func get_page_layer() -> Control:
 	return _page_layer
-
-
-# 本类方法：返回关卡根节点。
-func get_level_root() -> Node2D:
-	return _level_root
-
-
-# 本类方法：返回实体根节点。
-func get_entity_root() -> Node2D:
-	return _entity_root
-
 
 # 本类方法：返回特效根节点。
 func get_effect_root() -> Node2D:

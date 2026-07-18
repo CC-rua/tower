@@ -55,7 +55,6 @@ func take_damage(_damage: float) -> void:
 func _finish_route() -> void:
 	velocity = Vector2.ZERO
 	route_finished.emit(self)
-	queue_free()
 
 
 func _update_walk_animation(_move_velocity: Vector2) -> void:

@@ -80,6 +80,7 @@ func get_route_ids() -> Array[String]:
 	for _route_id in map_model.routes.keys():
 		_route_ids.append(str(_route_id))
 
+	_route_ids.sort()
 	return _route_ids
 
 

@@ -12,6 +12,7 @@ const DEFAULT_ENEMY_SCENE := preload("res://scenes/battle/enemy/black_flesh_enem
 var _battle_map_controller: BattleMapController = null
 var _enemy_root: Node = null
 var _spawned_test_enemies := false
+var _active_enemies: Array[BattleEnemy] = []
 
 
 func _ready() -> void:
@@ -46,7 +47,17 @@ func spawn_enemy(_route_id: String) -> BattleEnemy:
 	_get_enemy_root().add_child(_enemy)
 	_enemy.setup_route(_route_id, _route_points)
 	_enemy.route_finished.connect(_on_enemy_route_finished)
+	_active_enemies.append(_enemy)
 	return _enemy
+
+
+func destroy_enemy(_enemy: BattleEnemy) -> void:
+	if _enemy == null:
+		return
+
+	_active_enemies.erase(_enemy)
+	if is_instance_valid(_enemy):
+		_enemy.queue_free()
 
 
 func spawn_test_enemies() -> void:
@@ -70,7 +81,7 @@ func _on_map_loaded(_map_model: BattleMapModel) -> void:
 
 
 func _on_enemy_route_finished(_enemy: BattleEnemy) -> void:
-	pass
+	destroy_enemy(_enemy)
 
 
 func _get_enemy_root() -> Node:
