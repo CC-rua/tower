@@ -3,6 +3,7 @@ class_name GemInventoryPanel
 
 const GROUP_NAME := "gem_inventory"
 const SLOT_BACKGROUND_TEXTURE := preload("res://resource/image/gem_inventory_slot_bg_48x48.png")
+const DRAG_START_DISTANCE := 8.0
 
 @export var title := "宝石背包"
 @export var columns := 3
@@ -15,6 +16,10 @@ var _drag_layer: Node = null
 var _slot_style_normal: StyleBoxTexture = null
 var _slot_style_hover: StyleBoxTexture = null
 var _slot_style_pressed: StyleBoxTexture = null
+var _is_pending_drag := false
+var _pending_drag_slot_index := -1
+var _pending_drag_start_position := Vector2.ZERO
+var _selected_gem: MapGem = null
 
 @onready var _title_label: Label = $MarginContainer/VBoxContainer/TitleLabel
 @onready var _grid_container: GridContainer = $MarginContainer/VBoxContainer/GridContainer
@@ -28,6 +33,22 @@ func _ready() -> void:
 	_prepare_slot_styles()
 	_build_slots()
 	_add_debug_gems()
+	set_process(true)
+
+
+func _process(_delta: float) -> void:
+	if not _is_pending_drag:
+		return
+
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_cancel_pending_drag()
+		return
+
+	if _pending_drag_start_position.distance_to(get_global_mouse_position()) < DRAG_START_DISTANCE:
+		return
+
+	_begin_drag_from_slot(_pending_drag_slot_index)
+	_cancel_pending_drag()
 
 
 # 本类方法：设置当前背包中的全部宝石数据。
@@ -35,6 +56,8 @@ func set_gems(_new_gems: Array[MapGem]) -> void:
 	_ensure_slot_count()
 	for _index in range(_gems.size()):
 		_gems[_index] = _new_gems[_index] if _index < _new_gems.size() else null
+	if _selected_gem != null and not _gems.has(_selected_gem):
+		_selected_gem = null
 	_refresh_slots()
 
 
@@ -61,6 +84,8 @@ func remove_gem_at(_index: int) -> MapGem:
 
 	var _gem := _gems[_index]
 	_gems[_index] = null
+	if _selected_gem == _gem:
+		_selected_gem = null
 	_refresh_slots()
 	return _gem
 
@@ -147,6 +172,16 @@ func restore_dragged_gem(_gem: MapGem, _slot_index: int) -> void:
 	if _gem.get_parent() != null:
 		_gem.get_parent().remove_child(_gem)
 	_refresh_slots()
+
+
+func get_drag_layer() -> Node:
+	return _drag_layer if _drag_layer != null else self
+
+
+func get_selected_gem() -> MapGem:
+	if _selected_gem != null and _gems.has(_selected_gem):
+		return _selected_gem
+	return null
 
 
 # 本类方法：创建背包槽位。
@@ -241,9 +276,26 @@ func _on_slot_gui_input(_event: InputEvent, _index: int) -> void:
 	var _mouse_event := _event as InputEventMouseButton
 	if _mouse_event == null:
 		return
-	if not _mouse_event.pressed or _mouse_event.button_index != MOUSE_BUTTON_LEFT:
+
+	if _mouse_event.button_index != MOUSE_BUTTON_LEFT:
 		return
 
+	var _gem := get_gem(_index)
+	if _gem == null:
+		return
+
+	if _mouse_event.pressed:
+		_select_inventory_gem(_gem)
+		_is_pending_drag = true
+		_pending_drag_slot_index = _index
+		_pending_drag_start_position = get_global_mouse_position()
+		return
+
+	if _is_pending_drag and _pending_drag_slot_index == _index:
+		_cancel_pending_drag()
+
+
+func _begin_drag_from_slot(_index: int) -> void:
 	var _gem := get_gem(_index)
 	if _gem == null:
 		return
@@ -252,10 +304,35 @@ func _on_slot_gui_input(_event: InputEvent, _index: int) -> void:
 	if _gem.get_parent() != null:
 		_gem.get_parent().remove_child(_gem)
 
-	var _target_layer := _drag_layer if _drag_layer != null else self
+	var _target_layer := get_drag_layer()
 	_target_layer.add_child(_gem)
 	_gem.global_position = get_global_mouse_position()
 	_gem.begin_drag_from_inventory(self, _index)
+
+
+func _select_inventory_gem(_gem: MapGem) -> void:
+	if _gem == null:
+		return
+
+	_clear_selected_gems()
+	_selected_gem = _gem
+	_gem.set_selected(true)
+
+
+func _clear_selected_gems() -> void:
+	_selected_gem = null
+	for _node in get_tree().get_nodes_in_group(MapGem.GROUP_NAME):
+		var _gem := _node as MapGem
+		if _gem != null:
+			_gem.set_selected(false)
+	for _gem in _gems:
+		if _gem != null:
+			_gem.set_selected(false)
+
+
+func _cancel_pending_drag() -> void:
+	_is_pending_drag = false
+	_pending_drag_slot_index = -1
 
 
 # 本类方法：确保背包数组长度等于容量。

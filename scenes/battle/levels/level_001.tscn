@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://cotmdf6svcntq" path="res://scenes/battle/levels/script/enemy_controller.gd" id="7_enemy_controller"]
 [ext_resource type="Script" uid="uid://bag21185j6x2p" path="res://scenes/battle/levels/script/route_marker_controller.gd" id="8_route_marker_controller"]
 [ext_resource type="PackedScene" path="res://scenes/battle/prefab/route_marker/route_marker.tscn" id="9_route_marker"]
+[ext_resource type="Script" path="res://scenes/battle/levels/script/battle_economy_controller.gd" id="10_economy_controller"]
 
 [node name="Level001" type="Node2D" unique_id=1350352959]
 
@@ -88,6 +89,10 @@ origin_cell = Vector2i(29, 15)
 
 [node name="BattleMapController" type="Node" parent="." unique_id=537986881]
 script = ExtResource("5_06183")
+
+[node name="BattleEconomyController" type="Node" parent="." unique_id=1935335827]
+script = ExtResource("10_economy_controller")
+magic_recovery_per_second = 2.0
 
 [node name="EnemyController" type="Node" parent="." unique_id=1712779266]
 script = ExtResource("7_enemy_controller")

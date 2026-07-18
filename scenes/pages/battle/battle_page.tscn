@@ -7,6 +7,65 @@
 [ext_resource type="Script" uid="uid://lx3j7jbebd3i" path="res://scenes/pages/battle/building_bar_panel.gd" id="5_building_bar"]
 [ext_resource type="Texture2D" uid="uid://bwkqg7ejqrho3" path="res://resource/image/build_tower_button_icon_128x128.png" id="6_build_btn"]
 [ext_resource type="Texture2D" uid="uid://b7icybfvvitsa" path="res://resource/image/building_bar_panel_base_1024x192.png" id="7_build_bar_bg"]
+[ext_resource type="Script" uid="uid://byi5qdshyeheh" path="res://scenes/pages/battle/gem_detail_panel.gd" id="8_gem_detail"]
+[ext_resource type="Texture2D" uid="uid://ctbdnh1oel1i0" path="res://resource/image/gem_detail_panel_base_268x360.png" id="9_gem_detail_bg"]
+[ext_resource type="Texture2D" uid="uid://uqfvvxgy1t5c" path="res://resource/image/battle_control_bar_base_520x68.png" id="10_battle_bar_bg"]
+[ext_resource type="Texture2D" uid="uid://cbattg3lkuvjy" path="res://resource/image/battle_control_start_icon_32x32.png" id="11_start_icon"]
+[ext_resource type="Texture2D" uid="uid://dkbc4vs8nq008" path="res://resource/image/battle_control_next_wave_icon_32x32.png" id="12_next_wave_icon"]
+[ext_resource type="Texture2D" uid="uid://c3vdl825tqskn" path="res://resource/image/battle_control_double_speed_icon_32x32.png" id="13_speed_icon"]
+[ext_resource type="Texture2D" uid="uid://djfhv4vgcl2j3" path="res://resource/image/currency_panel_base_380x68.png" id="14_currency_bg"]
+[ext_resource type="Texture2D" uid="uid://dmvgavjjy3cl6" path="res://resource/image/currency_magic_icon_24x24.png" id="15_magic_icon"]
+[ext_resource type="Texture2D" uid="uid://hyopruvnyvp6" path="res://resource/image/currency_stone_icon_24x24.png" id="16_stone_icon"]
+[ext_resource type="Texture2D" uid="uid://byvviunbaefh1" path="res://resource/image/currency_gold_icon_24x24.png" id="17_gold_icon"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_battle_control_bar_bg"]
+texture = ExtResource("10_battle_bar_bg")
+texture_margin_left = 40.0
+texture_margin_top = 18.0
+texture_margin_right = 40.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_currency_panel_bg"]
+texture = ExtResource("14_currency_bg")
+texture_margin_left = 32.0
+texture_margin_top = 18.0
+texture_margin_right = 32.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_currency_item_bg"]
+bg_color = Color(1, 1, 1, 0.0627451)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_currency_bar_bg"]
+bg_color = Color(0.0941176, 0.129412, 0.188235, 0.95)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_magic_bar_fill"]
+bg_color = Color(0.298039, 0.662745, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stone_bar_fill"]
+bg_color = Color(0.666667, 0.741176, 0.772549, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gold_bar_fill"]
+bg_color = Color(1, 0.815686, 0.309804, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gem_inventory_panel_bg"]
 texture = ExtResource("4_gem_bg")
@@ -14,6 +73,20 @@ texture_margin_left = 24.0
 texture_margin_top = 24.0
 texture_margin_right = 24.0
 texture_margin_bottom = 24.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gem_detail_panel_bg"]
+texture = ExtResource("9_gem_detail_bg")
+texture_margin_left = 32.0
+texture_margin_top = 40.0
+texture_margin_right = 32.0
+texture_margin_bottom = 32.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gem_detail_row_bg"]
+bg_color = Color(1, 1, 1, 0.0509804)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_building_bar_panel_bg"]
 texture = ExtResource("7_build_bar_bg")
@@ -52,6 +125,165 @@ visible = false
 modulate = Color(1, 1, 1, 0.72)
 z_index = 30
 
+[node name="GemDragLayer" type="Node2D" parent="HudLayer/HudRoot" unique_id=1314209093]
+z_index = 40
+
+[node name="BattleControlBar" type="PanelContainer" parent="HudLayer/HudRoot" unique_id=1604419353]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -370.0
+offset_right = 370.0
+offset_bottom = 98.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_battle_control_bar_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/BattleControlBar" unique_id=295698919]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/BattleControlBar/MarginContainer" unique_id=888860570]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="StartBattleButton" type="Button" parent="HudLayer/HudRoot/BattleControlBar/MarginContainer/HBoxContainer" unique_id=383054677]
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+text = "开始战斗"
+icon = ExtResource("11_start_icon")
+
+[node name="NextWaveButton" type="Button" parent="HudLayer/HudRoot/BattleControlBar/MarginContainer/HBoxContainer" unique_id=340407103]
+custom_minimum_size = Vector2(160, 42)
+layout_mode = 2
+text = "立即发起下一波"
+icon = ExtResource("12_next_wave_icon")
+
+[node name="DoubleSpeedButton" type="Button" parent="HudLayer/HudRoot/BattleControlBar/MarginContainer/HBoxContainer" unique_id=571078442]
+custom_minimum_size = Vector2(120, 42)
+layout_mode = 2
+toggle_mode = true
+text = "二倍速"
+icon = ExtResource("13_speed_icon")
+
+[node name="CurrencyPanel" type="PanelContainer" parent="HudLayer/HudRoot" unique_id=1511603301]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -725.0
+offset_right = 113.0
+offset_bottom = 96.0
+grow_horizontal = 0
+scale = Vector2(0.8251477, 0.9868884)
+theme_override_styles/panel = SubResource("StyleBoxTexture_currency_panel_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/CurrencyPanel" unique_id=1907817020]
+layout_mode = 2
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer" unique_id=1548146246]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MagicRow" type="PanelContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer" unique_id=1587844608]
+custom_minimum_size = Vector2(108, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_currency_item_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/MagicRow" unique_id=679427965]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/MagicRow/MarginContainer" unique_id=505963029]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="IconLabel" type="TextureRect" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/MagicRow/MarginContainer/HBoxContainer" unique_id=1784541769]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("15_magic_icon")
+
+[node name="ValueBar" type="ProgressBar" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/MagicRow/MarginContainer/HBoxContainer" unique_id=43417168]
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_currency_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_magic_bar_fill")
+value = 50.0
+
+[node name="StoneRow" type="PanelContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer" unique_id=94333591]
+custom_minimum_size = Vector2(108, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_currency_item_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/StoneRow" unique_id=1194784122]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/StoneRow/MarginContainer" unique_id=2048766920]
+layout_mode = 2
+offset_transform_position = Vector2(-0.37, 0)
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="IconLabel" type="TextureRect" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/StoneRow/MarginContainer/HBoxContainer" unique_id=169720192]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("16_stone_icon")
+
+[node name="ValueBar" type="ProgressBar" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/StoneRow/MarginContainer/HBoxContainer" unique_id=512118552]
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_currency_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_stone_bar_fill")
+value = 50.0
+
+[node name="GoldRow" type="PanelContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer" unique_id=1033579920]
+custom_minimum_size = Vector2(108, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_currency_item_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/GoldRow" unique_id=878979283]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/GoldRow/MarginContainer" unique_id=463818455]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="IconLabel" type="TextureRect" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/GoldRow/MarginContainer/HBoxContainer" unique_id=940594653]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("17_gold_icon")
+
+[node name="ValueBar" type="ProgressBar" parent="HudLayer/HudRoot/CurrencyPanel/MarginContainer/HBoxContainer/GoldRow/MarginContainer/HBoxContainer" unique_id=454520741]
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_currency_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_gold_bar_fill")
+value = 50.0
+
 [node name="GemInventoryPanel" type="PanelContainer" parent="HudLayer/HudRoot" unique_id=1198047875]
 layout_mode = 0
 anchor_left = 1.0
@@ -66,6 +298,7 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_gem_inventory_panel_bg")
 script = ExtResource("3_gem")
+drag_layer_path = NodePath("../GemDragLayer")
 
 [node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemInventoryPanel" unique_id=1763987242]
 layout_mode = 2
@@ -88,6 +321,218 @@ layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 3
+
+[node name="GemDetailPanel" type="PanelContainer" parent="HudLayer/HudRoot" unique_id=1876106829]
+layout_mode = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -180.0
+offset_right = 292.0
+offset_bottom = 180.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_gem_detail_panel_bg")
+script = ExtResource("8_gem_detail")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel" unique_id=942857522]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer" unique_id=1368116883]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer" unique_id=1467367926]
+layout_mode = 2
+text = "宝石属性"
+horizontal_alignment = 1
+
+[node name="ContentVBox" type="VBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer" unique_id=210432384]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GemIdRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=1981263197]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gem_detail_row_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/GemIdRow" unique_id=1842413176]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/GemIdRow/MarginContainer" unique_id=1207850668]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeyLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/GemIdRow/MarginContainer/HBoxContainer" unique_id=402057740]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ID"
+
+[node name="ValueLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/GemIdRow/MarginContainer/HBoxContainer" unique_id=55054937]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="AttackDamageRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=185218682]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gem_detail_row_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackDamageRow" unique_id=323231154]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackDamageRow/MarginContainer" unique_id=743584963]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeyLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackDamageRow/MarginContainer/HBoxContainer" unique_id=892797632]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "伤害"
+
+[node name="ValueLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackDamageRow/MarginContainer/HBoxContainer" unique_id=330804580]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+
+[node name="AttackRangeRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=549562830]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gem_detail_row_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackRangeRow" unique_id=581642654]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackRangeRow/MarginContainer" unique_id=1441233871]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeyLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackRangeRow/MarginContainer/HBoxContainer" unique_id=1709660972]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "射程"
+
+[node name="ValueLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackRangeRow/MarginContainer/HBoxContainer" unique_id=1384943566]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+
+[node name="AttackIntervalRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=1239842911]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gem_detail_row_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackIntervalRow" unique_id=1948942956]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackIntervalRow/MarginContainer" unique_id=529879821]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeyLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackIntervalRow/MarginContainer/HBoxContainer" unique_id=781652141]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "攻速"
+
+[node name="ValueLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackIntervalRow/MarginContainer/HBoxContainer" unique_id=919533]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+
+[node name="DamageTypeRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=1801950984]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gem_detail_row_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/DamageTypeRow" unique_id=1980770704]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/DamageTypeRow/MarginContainer" unique_id=1281741644]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeyLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/DamageTypeRow/MarginContainer/HBoxContainer" unique_id=1754436802]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "类型"
+
+[node name="ValueLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/DamageTypeRow/MarginContainer/HBoxContainer" unique_id=965120292]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="TargetPolicyRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=381449061]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gem_detail_row_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/TargetPolicyRow" unique_id=250535434]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/TargetPolicyRow/MarginContainer" unique_id=674306191]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeyLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/TargetPolicyRow/MarginContainer/HBoxContainer" unique_id=272020148]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "索敌"
+
+[node name="ValueLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/TargetPolicyRow/MarginContainer/HBoxContainer" unique_id=1630052153]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="AttackColorRow" type="PanelContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox" unique_id=1838159514]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gem_detail_row_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackColorRow" unique_id=1936277679]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackColorRow/MarginContainer" unique_id=2120122314]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeyLabel" type="Label" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackColorRow/MarginContainer/HBoxContainer" unique_id=1576086789]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "颜色"
+
+[node name="ColorPreview" type="ColorRect" parent="HudLayer/HudRoot/GemDetailPanel/MarginContainer/VBoxContainer/ContentVBox/AttackColorRow/MarginContainer/HBoxContainer" unique_id=2038525479]
+custom_minimum_size = Vector2(42, 22)
+layout_mode = 2
 
 [node name="BuildingBarPanel" type="PanelContainer" parent="HudLayer/HudRoot" unique_id=721666750]
 layout_mode = 0

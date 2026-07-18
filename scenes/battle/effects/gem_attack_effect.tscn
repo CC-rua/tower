@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=4]
+
+[ext_resource type="Script" path="res://scenes/battle/effects/gem_attack_effect.gd" id="1_effect"]
+
+[node name="GemAttackEffect" type="Node2D"]
+z_index = 20
+script = ExtResource("1_effect")
+
+[node name="BeamGlow" type="Line2D" parent="."]
+width = 12.0
+default_color = Color(0.45, 0.95, 1, 0.28)
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="BeamCore" type="Line2D" parent="."]
+width = 4.0
+default_color = Color(0.45, 0.95, 1, 1)
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="MuzzleRing" type="Line2D" parent="."]
+width = 2.0
+default_color = Color(0.45, 0.95, 1, 1)
+closed = true
+
+[node name="HitRing" type="Line2D" parent="."]
+width = 3.0
+default_color = Color(0.45, 0.95, 1, 1)
+closed = true
