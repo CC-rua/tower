@@ -5,6 +5,7 @@ const DEFAULT_ENEMY_SCENE := preload("res://scenes/battle/enemy/black_flesh_enem
 
 signal battle_started
 signal battle_finished
+signal battle_failed
 signal wave_started(wave_number: int, total_waves: int)
 signal wave_progress_changed(wave_number: int, remaining_enemy_count: int)
 signal enemy_killed_rewarded(enemy: BattleEnemy, gold_amount: int)
@@ -26,6 +27,7 @@ var _enemy_root: Node = null
 var _active_enemies: Array[BattleEnemy] = []
 var _battle_has_started := false
 var _battle_is_finished := false
+var _battle_has_failed := false
 var _pending_wave_index := 0
 var _current_wave_index := -1
 var _remaining_spawns_in_wave := 0
@@ -52,7 +54,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if not _battle_has_started or _battle_is_finished:
+	if not _battle_has_started or _battle_is_finished or _battle_has_failed:
 		return
 
 	if _is_spawning_wave:
@@ -117,6 +119,8 @@ func start_battle() -> bool:
 
 	_battle_has_started = true
 	_wave_cooldown_remaining = 0.0
+	if _economy_controller != null:
+		_economy_controller.set_magic_recovery_enabled(true)
 	battle_started.emit()
 	_start_next_wave()
 	return true
@@ -140,7 +144,11 @@ func has_battle_started() -> bool:
 
 
 func is_battle_finished() -> bool:
-	return _battle_is_finished
+	return _battle_is_finished or _battle_has_failed
+
+
+func has_battle_failed() -> bool:
+	return _battle_has_failed
 
 
 func get_total_wave_count() -> int:
@@ -219,12 +227,14 @@ func _on_wave_spawn_completed() -> void:
 
 
 func _finish_battle() -> void:
-	if _battle_is_finished:
+	if _battle_is_finished or _battle_has_failed:
 		return
 
 	_battle_is_finished = true
 	_is_spawning_wave = false
 	_wave_cooldown_remaining = 0.0
+	if _economy_controller != null:
+		_economy_controller.set_magic_recovery_enabled(false)
 	battle_finished.emit()
 
 
@@ -244,7 +254,10 @@ func _on_map_loaded(_map_model: BattleMapModel) -> void:
 
 
 func _on_enemy_route_finished(_enemy: BattleEnemy) -> void:
+	_apply_enemy_route_damage(_enemy)
 	destroy_enemy(_enemy)
+	if _battle_has_failed:
+		return
 	if _battle_has_started and _pending_wave_index >= get_total_wave_count() and not _is_spawning_wave and _active_enemies.is_empty():
 		_finish_battle()
 
@@ -281,3 +294,28 @@ func _grant_enemy_kill_reward(_enemy: BattleEnemy) -> void:
 	if _economy_controller != null:
 		_economy_controller.add_gold(_gold_reward)
 	enemy_killed_rewarded.emit(_enemy, _gold_reward)
+
+
+func _apply_enemy_route_damage(_enemy: BattleEnemy) -> void:
+	if _enemy == null or _economy_controller == null or _battle_has_failed:
+		return
+
+	var _magic_damage: int = int(ceil(max(_enemy.damage, 0.0)))
+	if _magic_damage <= 0:
+		return
+
+	var _remaining_magic: int = _economy_controller.deduct_magic(_magic_damage)
+	if _remaining_magic <= 0:
+		_fail_battle()
+
+
+func _fail_battle() -> void:
+	if _battle_is_finished or _battle_has_failed:
+		return
+
+	_battle_has_failed = true
+	_is_spawning_wave = false
+	_wave_cooldown_remaining = 0.0
+	if _economy_controller != null:
+		_economy_controller.set_magic_recovery_enabled(false)
+	battle_failed.emit()

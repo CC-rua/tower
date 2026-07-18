@@ -3,6 +3,9 @@ extends Node
 const APP_ROOT_SCENE_PATH := "res://scenes/app/app.tscn"
 const START_PAGE_ID := "main_menu"
 const DEFAULT_BATTLE_LEVEL_SCENE_PATH := "res://scenes/battle/levels/level_001.tscn"
+const BATTLE_RESULT_NONE := "none"
+const BATTLE_RESULT_VICTORY := "victory"
+const BATTLE_RESULT_DEFEAT := "defeat"
 
 # 标记应用是否已经完成初始化，避免重复初始化。
 var _is_initialized := false
@@ -10,6 +13,12 @@ var _is_initialized := false
 var _app_root: Node = null
 # 当前选中的战斗关卡场景路径。
 var _selected_battle_level_scene_path := DEFAULT_BATTLE_LEVEL_SCENE_PATH
+# 最近一次战斗结算数据。
+var _latest_battle_result: Dictionary = {
+	"result": BATTLE_RESULT_NONE,
+	"title": "结算",
+	"description": "",
+}
 
 
 # 继承方法：节点进入场景树后设置常驻处理模式。
@@ -62,3 +71,17 @@ func get_selected_battle_level_scene_path() -> String:
 # 本类方法：重置当前待进入的战斗关卡场景路径。
 func reset_selected_battle_level_scene_path() -> void:
 	_selected_battle_level_scene_path = DEFAULT_BATTLE_LEVEL_SCENE_PATH
+
+
+# 本类方法：保存最近一次战斗结算结果，供结算页读取。
+func set_latest_battle_result(result: String, title: String, description: String = "") -> void:
+	_latest_battle_result = {
+		"result": result,
+		"title": title,
+		"description": description,
+	}
+
+
+# 本类方法：获取最近一次战斗结算结果。
+func get_latest_battle_result() -> Dictionary:
+	return _latest_battle_result.duplicate()

@@ -18,6 +18,7 @@ collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_enemy")
 move_speed = 20.0
+damage = 60.0
 kill_reward_gold = 12
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1513850367]

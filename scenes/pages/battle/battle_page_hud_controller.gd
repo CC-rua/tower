@@ -32,6 +32,9 @@ func _ready() -> void:
 	_double_speed_button.toggled.connect(_on_double_speed_button_toggled)
 	_placement_preview.visible = false
 	Engine.time_scale = 1.0
+	if _enemy_controller != null:
+		_enemy_controller.battle_finished.connect(_on_battle_finished)
+		_enemy_controller.battle_failed.connect(_on_battle_failed)
 	if _economy_controller != null:
 		_economy_controller.currency_changed.connect(_on_economy_currency_changed)
 	_refresh_currency_display()
@@ -103,6 +106,24 @@ func _on_start_next_wave_button_pressed() -> void:
 func _on_double_speed_button_toggled(is_toggled_on: bool) -> void:
 	Engine.time_scale = 2.0 if is_toggled_on else 1.0
 	_refresh_battle_control_buttons()
+
+
+func _on_battle_finished() -> void:
+	App.set_latest_battle_result(
+		App.BATTLE_RESULT_VICTORY,
+		"战斗胜利",
+		"怪物已全部清理。"
+	)
+	SceneFlow.go_to_page("result")
+
+
+func _on_battle_failed() -> void:
+	App.set_latest_battle_result(
+		App.BATTLE_RESULT_DEFEAT,
+		"战斗失败",
+		"魔力耗尽。"
+	)
+	SceneFlow.go_to_page("result")
 
 
 func set_magic_amount(amount: int) -> void:

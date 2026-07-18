@@ -15,6 +15,7 @@ const CURRENCY_GOLD := "gold"
 @export var stone_capacity := 100
 @export var gold_capacity := 300
 @export var magic_recovery_per_second := 1.0
+@export var magic_recovery_enabled := false
 
 var _magic_amount := 0
 var _stone_amount := 0
@@ -26,7 +27,7 @@ func _ready() -> void:
 	_magic_amount = clampi(initial_magic, 0, max(magic_capacity, 1))
 	_stone_amount = clampi(initial_stone, 0, max(stone_capacity, 1))
 	_gold_amount = clampi(initial_gold, 0, max(gold_capacity, 1))
-	set_process(magic_recovery_per_second > 0.0)
+	_refresh_process_enabled()
 	_emit_all_currency_changed()
 
 
@@ -89,8 +90,19 @@ func add_gold(amount: int) -> void:
 	_set_currency_amount(CURRENCY_GOLD, _gold_amount + max(amount, 0))
 
 
+func deduct_magic(amount: int) -> int:
+	var _safe_amount: int = max(amount, 0)
+	_set_currency_amount(CURRENCY_MAGIC, _magic_amount - _safe_amount)
+	return _magic_amount
+
+
 func set_currency_amount(currency_id: String, amount: int) -> void:
 	_set_currency_amount(currency_id, amount)
+
+
+func set_magic_recovery_enabled(is_enabled: bool) -> void:
+	magic_recovery_enabled = is_enabled
+	_refresh_process_enabled()
 
 
 func spend_currency(currency_id: String, amount: int) -> bool:
@@ -148,3 +160,7 @@ func _emit_all_currency_changed() -> void:
 	currency_changed.emit(CURRENCY_STONE, _stone_amount, stone_capacity)
 	currency_changed.emit(CURRENCY_GOLD, _gold_amount, gold_capacity)
 	currencies_changed.emit()
+
+
+func _refresh_process_enabled() -> void:
+	set_process(magic_recovery_enabled and magic_recovery_per_second > 0.0)
